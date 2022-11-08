@@ -14,14 +14,220 @@ const gameBoard = class {
   }
 }
 
-
-// NODE FACTORY FUNCTION
-const position = (array) => {
+const positionFactory = (array) => {
+  console.log('running positionFactory with array:')
+  console.log(array);
   let x = array[0];
   let y = array[1];
-  let possibleMoves = [];
-  return { array, x, y, possibleMoves };
-};
+  let forwardRight = null;
+  let forwardLeft = null;
+  let rightForward = null;
+  let rightBackward = null;
+  let leftForward = null;
+  let leftBackward = null;
+  let backwardRight = null;
+  let backwardLeft = null;
+  return {x,y,forwardRight,forwardLeft,rightForward,rightBackward,leftForward,leftBackward,backwardRight,backwardLeft};
+}
+
+const Tree = class {
+
+  constructor(array) {
+    console.log('creating tree');
+    this.array = array;
+    this.root = positionFactory(array);
+  }
+
+
+// This works
+testBuildTree(position = this.root) {
+  if (0 < (position.x + 2) < 9){
+  console.log(position);
+  console.log(`position.x is ${position.x}`);
+  console.log(`position.x + 2 is ${position.x + 2}`);
+  let newArray = [position.x +2, position.y+1];
+  console.log(newArray)
+  position.rightForward = positionFactory(newArray);
+  console.log(position);
+  }
+}
+
+// takes a position object as parameter
+  buildTree(position = this.root) {
+    console.log(position);
+
+    //if position is already in tree, return.
+
+    let xP2 = parseFloat(position.x) + 2;
+    let xM2 = parseFloat(position.x) - 2;
+    let xP1 = parseFloat(position.x) + 1;
+    let xM1 = parseFloat(position.x) - 1;
+    let yP2 = parseFloat(position.y) + 2;
+    let yM2 = parseFloat(position.y) - 2;
+    let yP1 = parseFloat(position.y) + 1;
+    let yM1 = parseFloat(position.y) - 1;
+
+    //RIGHT
+    if (0 < xP2 && xP2 < 9){
+      // Right Forward
+      if (0 < yP1 && yP1 < 9) { 
+        position.rightForward = this.buildTree(positionFactory([xP2, yP1]));
+      } else {
+        return null;
+      }
+      // Right Backward
+      if (0 < yM1 < 9) {
+        position.rightBackward = this.buildTree(positionFactory([xP2, yM1]));
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    };
+
+    //LEFT
+    if (0 < xM2 < 9){
+      // Left Forward
+      if (0 < yP1 < 9) {
+        position.leftForward = this.buildTree(positionFactory([xM2, yP1]));
+      } else {
+        return null;
+      }
+      // Left Backward
+      if (0 < yM1 < 9) {
+        position.leftBackward = this.buildTree(positionFactory([xM2, yM1]));
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    };
+
+    //FORWARD
+    if (0 < yP2 < 9){
+      // Forward Right
+      if (0 < xP1 < 9) {
+        position.forwardRight = this.buildTree(positionFactory([yP2, xP1]));
+      } else {
+        return null;
+      }
+      // Forward Left
+      if (0 < xM1 < 9) {
+        position.forwardLeft = this.buildTree(positionFactory([yP2, xM1]));
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    };
+
+    //BACKWARD
+    if (0 < yM2 < 9){
+      // Backward Right
+      if (0 < xP1 < 9) {
+        position.backwardRight = this.buildTree(positionFactory([yM2, xP1]));
+      } else {
+        return null;
+      }
+      // Backward Left
+      if (0 < xM1 < 9) {
+        position.backwardLeft = this.buildTree(positionFactory([yM2, xM1]));
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    };
+
+    return position;
+  }
+
+
+
+
+
+  findShortestRoute(position,destination) {
+
+  }
+
+
+
+  
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// POSITION FACTORY FUNCTION
+// const positionFactory = (array) => {
+//   let x = array[0];
+//   let y = array[1];
+  
+//   moveForwardRight() {
+//     if (0 < (this.x + 1) < 9){
+//       if (0 < (this.y + 2) < 9) {
+//         return positionFactory([this.x + 1, this.y + 2])
+//       } else {
+//         return null;
+//       }
+//     } else {
+//       return null;
+//     };
+//   }
+
+//   return { array, x, y };
+// };
+
+
+
+const knightMoves2 = function(startPosition = positionFactory(start), endPosition = positionFactory(end)) {
+
+  // if start and end position are the same
+  if (startPosition.x === endPosition.x && startPosition.y === endPosition.y) {
+    console.log ('We have a match.');
+  }
+
+  if (0 < (startPosition.x + 2) < 9) {
+    if (0 < (startPosition.y + 1) < 9) {
+      let newArray = [startPosition.x + 2, startPosition.y + 1]
+      let newPosition = positionFactory(newArray);
+      startPosition.possibleMoves.push(newPosition);
+      knightMoves2(newPosition, end)
+    }
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Make a tree of possibilities
@@ -60,6 +266,13 @@ const isAlreadyInArray = function(array1, array2) {
   }
   return false;
 }
+
+
+
+
+
+
+
 
 
 
@@ -207,3 +420,5 @@ const Knight = class {
     // find shortest path between two positions
   }
 }
+
+const TheTree = new Tree([1,1]);
