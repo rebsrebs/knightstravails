@@ -6,7 +6,22 @@ const gameBoard = class {
 
     for (let x = 1; x < 9; x++) {
       for (let y = 1; y < 9; y++) {
-        const square = [x,y];
+        // create position node
+        const square = positionFactory([x,y]);
+        // variables
+        let xP2 = parseFloat(position.x) + 2;
+        let xM2 = parseFloat(position.x) - 2;
+        let xP1 = parseFloat(position.x) + 1;
+        let xM1 = parseFloat(position.x) - 1;
+        let yP2 = parseFloat(position.y) + 2;
+        let yM2 = parseFloat(position.y) - 2;
+        let yP1 = parseFloat(position.y) + 1;
+        let yM1 = parseFloat(position.y) - 1;
+
+        //forwardRight
+        if ((0 < xP1 < 9) && (0 < yP2 < 9)) {
+          square.forwardRight = [xP1, yP2];
+        }
         gameBoardArray.push(square);
       }
     }
@@ -14,11 +29,13 @@ const gameBoard = class {
   }
 }
 
+
 const positionFactory = (array) => {
   console.log('running positionFactory with array:')
   console.log(array);
   let x = array[0];
   let y = array[1];
+  let parent = null;
   let forwardRight = null;
   let forwardLeft = null;
   let rightForward = null;
@@ -53,10 +70,15 @@ testBuildTree(position = this.root) {
 }
 
 // takes a position object as parameter
-  buildTree(position = this.root) {
+  buildTree(destination, position, beenThere = []) {
     console.log(position);
 
-    //if position is already in tree, return.
+    if (position.x === destination.x && position.y === destination.y) {
+      console.log('Done!')
+      return beenThere;
+    } else {
+
+    beenThere.push(position);
 
     let xP2 = parseFloat(position.x) + 2;
     let xM2 = parseFloat(position.x) - 2;
@@ -71,14 +93,21 @@ testBuildTree(position = this.root) {
     if (0 < xP2 && xP2 < 9){
       // Right Forward
       if (0 < yP1 && yP1 < 9) { 
-        position.rightForward = this.buildTree(positionFactory([xP2, yP1]));
+        if (isAlreadyInArray(beenThere, [xP2, yP1])) {
+          return 'Been there!';
+        } else {
+          position.rightForward = this.buildTree(destination, positionFactory([xP2, yP1]), beenThere);
+        }
       } else {
         return null;
       }
       // Right Backward
       if (0 < yM1 < 9) {
-        position.rightBackward = this.buildTree(positionFactory([xP2, yM1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [xP2, yM1])) {
+          return 'Been there!';
+        } else {
+        position.rightBackward = this.buildTree(destination, positionFactory([xP2, yM1]), beenThere);
+      }} else {
         return null;
       }
     } else {
@@ -89,14 +118,20 @@ testBuildTree(position = this.root) {
     if (0 < xM2 < 9){
       // Left Forward
       if (0 < yP1 < 9) {
-        position.leftForward = this.buildTree(positionFactory([xM2, yP1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [xM2, yP1])) {
+          return 'Been there!';
+        } else {
+        position.leftForward = this.buildTree(destination, positionFactory([xM2, yP1]), beenThere);
+      }} else {
         return null;
       }
       // Left Backward
       if (0 < yM1 < 9) {
-        position.leftBackward = this.buildTree(positionFactory([xM2, yM1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [xM2, yM1])) {
+          return 'Been there!';
+        } else {
+        position.leftBackward = this.buildTree(destination, positionFactory([xM2, yM1]), beenThere);
+      }} else {
         return null;
       }
     } else {
@@ -107,14 +142,20 @@ testBuildTree(position = this.root) {
     if (0 < yP2 < 9){
       // Forward Right
       if (0 < xP1 < 9) {
-        position.forwardRight = this.buildTree(positionFactory([yP2, xP1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [yP2, xP1])) {
+          return 'Been there!';
+        } else {
+        position.forwardRight = this.buildTree(destination, positionFactory([yP2, xP1]), beenThere);
+      }} else {
         return null;
       }
       // Forward Left
       if (0 < xM1 < 9) {
-        position.forwardLeft = this.buildTree(positionFactory([yP2, xM1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [yP2, xM1])) {
+          return 'Been there!';
+        } else {
+        position.forwardLeft = this.buildTree(destination, positionFactory([yP2, xM1]), beenThere);
+      }} else {
         return null;
       }
     } else {
@@ -125,14 +166,20 @@ testBuildTree(position = this.root) {
     if (0 < yM2 < 9){
       // Backward Right
       if (0 < xP1 < 9) {
-        position.backwardRight = this.buildTree(positionFactory([yM2, xP1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [yM2, xP1])) {
+          return 'Been there!';
+        } else {
+        position.backwardRight = this.buildTree(destination, positionFactory([yM2, xP1]), beenThere);
+      }} else {
         return null;
       }
       // Backward Left
       if (0 < xM1 < 9) {
-        position.backwardLeft = this.buildTree(positionFactory([yM2, xM1]));
-      } else {
+        if (isAlreadyInArray(beenThere, [yM2, xM1])) {
+          return 'Been there!';
+        } else {
+        position.backwardLeft = this.buildTree(destination, positionFactory([yM2, xM1]), beenThere);
+      }} else {
         return null;
       }
     } else {
@@ -140,6 +187,7 @@ testBuildTree(position = this.root) {
     };
 
     return position;
+  }
   }
 
 
@@ -259,13 +307,17 @@ const testFunction = function(array1 = [1,1],array2 = [4,4],possibleMovesArray=[
 
 
 const isAlreadyInArray = function(array1, array2) {
+  console.log('running isAlreadyInArray');
   for (let i = 0; i < array1.length; i++) {
     if (array1[i][0] === array2[0] && array1[i][1] === array2[1]){
+      console.log('We have already been here.');
       return true;
     }
   }
   return false;
 }
+
+
 
 
 
