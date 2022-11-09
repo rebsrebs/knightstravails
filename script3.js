@@ -39,6 +39,22 @@ const makeVertices = function() {
 }
 
 makeVertices();
+
+
+const pushToEachOther = function(node, newX, newY) {
+  console.log(`newX is ${newX} and newY is ${newY}`);
+  if ((0 < newY && newY < 9) && (0 < newX && newX < 9)) {
+    var adjacentNode = vertices.find(item => item.x === newX && item.y === newY);
+    console.log('adjacent node:');
+    console.log(adjacentNode);
+
+    node.edgesList.includes(adjacentNode)? console.log('already in here') : node.edgesList.push(adjacentNode);
+
+    adjacentNode.edgesList.includes(node)? console.log('already in there') : adjacentNode.edgesList.push(node);
+  } else {
+    console.log('This is not on the board.');
+  }
+}
   
 // Find all adjacent nodes to the given node and put them in that node's edgeList
 const connect = function(node) {
@@ -51,26 +67,30 @@ const connect = function(node) {
   let yM2 = parseFloat(node.y) - 2;
   let yP1 = parseFloat(node.y) + 1;
   let yM1 = parseFloat(node.y) - 1;
-  // if forward 2 right 1 from node is on board
-  if ((0 < yP2 < 9) && (0 < xP1 < 9)) {
-    // This works: find that node in the vertices array
-    let adjacentNode = vertices.find(item => item.x === xP1 && item.y === yP2);
-    console.log(adjacentNode);
-    // if that node is not in this node's edgeList
-    if (node.edgesList.includes(adjacentNode)) {
-      console.log('already in here') 
-     } else {
-      node.edgesList.push(adjacentNode);
-    }
-    // if this node is not in that node's edgelist
-    if (adjacentNode.edgesList.includes(node)) {
-      console.log('already in there');
-    } else {
-      adjacentNode.edgesList.push(node);
-      console.log(adjacentNode.edgesList);
-    } 
-  } 
+  
+  //Forward 2 Right 1
+  pushToEachOther(node, xP1, yP2);
+  //Forward 2 Left 1
+  pushToEachOther(node, xM1, yP2);
+  //Backward 2 Right 1
+  pushToEachOther(node, xP1, yM2);
+  //Backward 2 Left 1
+  pushToEachOther(node, xM1, yM2);
+  //Right 2 Forward 1
+  pushToEachOther(node, xP2, yP1);
+  //Right 2 Backward 1
+  pushToEachOther(node, xP2, yM1);
+  //Left 2 Forward 1
+  pushToEachOther(node, xM2, yP1);
+  //Left 2 Backward 1
+  pushToEachOther(node, xM2, yM1);
 }
+
+
+const makeConnections = function() {
+  vertices.forEach(connect);
+}
+
 
 // GAMEBOARD CLASS
 class GameBoard {
@@ -102,10 +122,7 @@ class GameBoard {
 // console.log(includes);
 // This is a neat one! But be aware that if array has a length of 0, it always will return true, and I don't think you want that. So, you should really add the array.length &&  before array.every(... – 
 
-const makeConnections = function() {
-  // for every node in vertices array
-  // run connect(node);
-}
+
 
 
   
