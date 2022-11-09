@@ -105,6 +105,31 @@ class GameBoard {
 }
 
 
+const findShortestPath = function(current, destination, counter = 0) {
+
+  counter++;
+
+  // base case
+  // if current edgesList contains destination
+  if (current.edgesList.includes(destination)){
+    return counter;
+  } else {
+    for (i = 0; i < current.edgesList.length; i++) {
+      return findShortestPath(current.edgesList[i], destination, counter);
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
