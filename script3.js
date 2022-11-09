@@ -105,20 +105,42 @@ class GameBoard {
 }
 
 
-const findShortestPath = function(current, destination, counter = 0) {
 
-  counter++;
 
-  // base case
-  // if current edgesList contains destination
-  if (current.edgesList.includes(destination)){
-    return counter;
-  } else {
-    for (i = 0; i < current.edgesList.length; i++) {
-      return findShortestPath(current.edgesList[i], destination, counter);
+//LEVEL ORDER FIND SHORTEST PATH
+const findShortestPath = function(startingNode, endingNode) {
+
+  let done = [];
+
+  let queue = [];
+  queue.push(startingNode);
+
+  while (queue.length > 0) {
+
+    if (queue[0].edgesList.length > 0) {
+
+      if (queue[0].edgesList.includes(endingNode)) {
+        done.push(queue[0]);
+        done.push(endingNode);
+        return done;
+      } else {
+
+        if (startingNode.edgesList.length > 0) {
+          for (let i = 0; i < startingNode.edgesList.length; i++) {
+            queue.push(startingNode.edgesList[i]);
+          }
+        }
+
+        done.push(queue.shift().data);    
+      }
     }
   }
 }
+  
+  
+
+
+
 
 
 
@@ -166,3 +188,22 @@ const findShortestPath = function(current, destination, counter = 0) {
 //   ['C', 'D']
 //   ]
 
+
+
+
+
+//MAX CALL STACK EXCEEDED
+// const findShortestPath = function(current, destination, counter = 0) {
+
+//   counter++;
+
+//   // base case
+//   // if current edgesList contains destination
+//   if (current.edgesList.includes(destination)){
+//     return counter;
+//   } else {
+//     for (i = 0; i < current.edgesList.length; i++) {
+//       return findShortestPath(current.edgesList[i], destination, counter);
+//     }
+//   }
+// }
