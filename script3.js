@@ -1,6 +1,4 @@
-//ADJACENCY LIST VERSION
-
-//NODE VLASS
+//NODE CLASS
 class Node {
   constructor(locationArray) {
   this.locationArray = locationArray;
@@ -16,18 +14,20 @@ class Node {
   }
 
   getAdjacentNodes () {
-    return this.edgesList.map(edge => edge.value);
+    return this.edgesList.map(edge => edge.locationArray);
   }
 
+  // not sure how this works
   isConnected(node) {
-    return this.edgesList.map(edge => edge.value).indexOf(node.value) > -1;
+    return this.edgesList.map(edge => edge.locationArray).indexOf(node.value) > -1;
   }
 }
 //END NODE CLASS
 
+// Array to store all of the locations
 const vertices = [];
 
-//Makes 64 nodes for every location on chess board
+// Makes 64 locations - one for each square of 8x8 chessboard
 const makeVertices = function() {
   for (let x = 1; x < 9; x++) {
     for (let y = 1; y < 9; y++) {
@@ -38,9 +38,10 @@ const makeVertices = function() {
   return vertices;
 }
 
+// Create chessboard
 makeVertices();
 
-
+// Utility function to check if node's are already in each other's adjacency lists before pushing them
 const pushToEachOther = function(node, newX, newY) {
   console.log(`newX is ${newX} and newY is ${newY}`);
   if ((0 < newY && newY < 9) && (0 < newX && newX < 9)) {
@@ -56,7 +57,8 @@ const pushToEachOther = function(node, newX, newY) {
   }
 }
   
-// Find all adjacent nodes to the given node and put them in that node's edgeList
+// Specifically for a knight
+// Utility function to find all adjacent nodes to the given node and put them in that node's edgeList
 const connect = function(node) {
   // make variables
   let xP2 = parseFloat(node.x) + 2;
@@ -86,7 +88,7 @@ const connect = function(node) {
   pushToEachOther(node, xM2, yM1);
 }
 
-
+// Connect all board locations from vertices array by filling out adjacency lsits
 const makeConnections = function() {
   vertices.forEach(connect);
 }
@@ -95,8 +97,9 @@ const makeConnections = function() {
 // GAMEBOARD CLASS
 class GameBoard {
 
+  // put vertices array here
   constructor (nodes) {
-    this.nodes = [...nodes]; // ES6 spread operator - short for pushing individual things into new array)
+    this.nodes = [...nodes]; // ES6 spread operator
   }
 
   addToGraph(node) {
@@ -107,9 +110,18 @@ class GameBoard {
 
 
 
+
+
+// specifically for a knight
 //LEVEL ORDER FIND SHORTEST PATH
-const findShortestPath = function(currentNode, endingNode) {
-  console.log('Running findShortestPath function');
+const knightMoves = function(array1, array2) {
+  console.log('Running knightMoves function');
+
+  //find which node matches the array
+  currentNode =  vertices.find(item => item.locationArray[0] === array1[0] && item.locationArray[1] === array1[1]);
+  console.log(currentNode);
+  endingNode = vertices.find(item => item.locationArray[0] === array2[0] && item.locationArray[1] === array2[1]);
+  console.log(endingNode);
 
   let visited = [];
   let queue = [];
@@ -119,16 +131,18 @@ const findShortestPath = function(currentNode, endingNode) {
   while (queue.length > 0) {
     console.log('queue[0]:');
     console.log(queue[0]);
-    // visited.push(queue[0]);
 
+      // BASE CASE
       // if the first thing in the queue is adjacent to endingNode
       if (queue[0].edgesList.includes(endingNode)) {
         // push that to done
         // push ending node to done
         console.log('Base case!');
+        visited.push(queue.shift());  
         visited.push(endingNode);
-        // return done
-        return visited;
+        let moves = visited.map(node => node.locationArray);
+        console.log(`Destination reached in ${moves.length - 1} moves! Here's your path:`)
+        return moves;
       // otherwise, enqueue children
       } else {
         // for every node in current node's adjacency list
@@ -143,78 +157,8 @@ const findShortestPath = function(currentNode, endingNode) {
           }        
         }
         // push current node out of queue into done array
+        console.log('About to push first in queue to visited')
         visited.push(queue.shift());    
       }
   }
 }
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const vertexIdxs = {
-//   'A': 0,
-//   'B': 1,
-//   'C': 2,
-//   'D': 3,
-//   'E': 4
-//   }
-
-//     var array = [1, 3],
-//     prizes = [[1, 3], [1, 4]],
-//     includes = prizes.some(a => array.every((v, i) => v === a[i]));
-// console.log(includes);
-// This is a neat one! But be aware that if array has a length of 0, it always will return true, and I don't think you want that. So, you should really add the array.length &&  before array.every(... – 
-
-
-
-
-  
-
-  
-
-
-
-// const vertices = ['A', 'B', 'C', 'D', 'E']
-
-// const adjacency_list = [
-//   ['B', 'D'] // A's adjacency list
-//   ['A', 'C']
-//   ['B', 'C', 'E']
-//   ['A', 'C', 'E']
-//   ['C', 'D']
-//   ]
-
-
-
-
-
-//MAX CALL STACK EXCEEDED
-// const findShortestPath = function(current, destination, counter = 0) {
-
-//   counter++;
-
-//   // base case
-//   // if current edgesList contains destination
-//   if (current.edgesList.includes(destination)){
-//     return counter;
-//   } else {
-//     for (i = 0; i < current.edgesList.length; i++) {
-//       return findShortestPath(current.edgesList[i], destination, counter);
-//     }
-//   }
-// }
