@@ -108,32 +108,43 @@ class GameBoard {
 
 
 //LEVEL ORDER FIND SHORTEST PATH
-const findShortestPath = function(startingNode, endingNode) {
+const findShortestPath = function(currentNode, endingNode) {
+  console.log('Running findShortestPath function');
 
-  let done = [];
-
+  let visited = [];
   let queue = [];
-  queue.push(startingNode);
+  queue.push(currentNode);
 
+  // while the queue has anything in it
   while (queue.length > 0) {
+    console.log('queue[0]:');
+    console.log(queue[0]);
+    // visited.push(queue[0]);
 
-    if (queue[0].edgesList.length > 0) {
-
+      // if the first thing in the queue is adjacent to endingNode
       if (queue[0].edgesList.includes(endingNode)) {
-        done.push(queue[0]);
-        done.push(endingNode);
-        return done;
+        // push that to done
+        // push ending node to done
+        console.log('Base case!');
+        visited.push(endingNode);
+        // return done
+        return visited;
+      // otherwise, enqueue children
       } else {
-
-        if (startingNode.edgesList.length > 0) {
-          for (let i = 0; i < startingNode.edgesList.length; i++) {
-            queue.push(startingNode.edgesList[i]);
-          }
+        // for every node in current node's adjacency list
+        for (let i = 0; i < queue[0].edgesList.length; i++) {
+          
+          // if edgeList[i] has not been visited
+          if (!visited.includes(queue[0].edgesList[i])){
+            // push them to the queue
+          queue.push(queue[0].edgesList[i]);
+          } else {
+            console.log('This has been visited.');
+          }        
         }
-
-        done.push(queue.shift().data);    
+        // push current node out of queue into done array
+        visited.push(queue.shift());    
       }
-    }
   }
 }
   
